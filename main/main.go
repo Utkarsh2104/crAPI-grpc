@@ -46,7 +46,7 @@ func InitializeMongo(DbUser string, DbPassword string, DbHost string, DbPort str
 
 func (s *server) CreatePost(ctx context.Context, in *pb.CreatePostRequest) (*pb.CreatePostResponse, error) {
 	println("Client made a call to create Post ..... calling prepare")
-	models.Prepare(in)
+	// models.Prepare(in)
 	post := in.GetPost()
 
 	log.Printf("post is : %v", post)

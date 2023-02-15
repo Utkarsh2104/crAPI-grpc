@@ -1,0 +1,105 @@
+type Post {
+  id: String!
+  title: String!
+  content: String!
+  author: String!
+  comments: [String!]
+  author_id: String!
+  created_at: String! 
+}
+
+input PostInput {
+  id: String!
+  title: String!
+  content: String!
+  author: String!
+  comments: [String!]
+  author_id: String!
+  created_at: String! 
+}
+
+type Coupon {
+  coupon_code: String!
+  amount: String!
+  created_at: String!
+}
+
+input CouponInput {
+  coupon_code: String!
+  amount: String!
+  created_at: String!
+}
+
+type User {
+  id: String!
+  nickname: String!
+  email: String!
+  vehicle_id: String!
+  picurl: String!
+  created_at: String!
+}
+
+input UserInput {
+  id: String!
+  nickname: String!
+  email: String!
+  vehicle_id: String!
+  picurl: String!
+  created_at: String!
+}
+
+type Comment {
+  id: String!
+  content: String!
+  created_at: String!
+  author: String!
+}
+
+input CommentInput {
+  id: String!
+  content: String!
+  created_at: String!
+  author: String!
+}
+# service CommunityService {
+
+#   // Post API services.
+#   rpc CreatePost (CreatePostRequest) returns (CreatePostResponse) {};
+#   rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse) {};
+#   rpc GetPosts (GetPostsRequest) returns (GetPostsResponse) {};
+#   rpc DeletePosts (DeletePostsRequest) returns (DeletePostsResponse) {};
+
+#   // Coupon API services.
+#   rpc CreateCoupon (CreateCouponRequest) returns (CreateCouponResponse) {};
+#   rpc UpdateCoupon (UpdateCouponRequest) returns (UpdateCouponResponse) {};
+#   rpc GetCoupons (GetCouponsRequest) returns (GetCouponsResponse) {};
+#   rpc DeleteCoupons (DeleteCouponsRequest) returns (DeleteCouponsResponse) {};
+
+#   // User API services.
+#   rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {};
+#   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {};
+#   rpc GetUsers (GetUsersRequest) returns (GetUsersResponse) {};
+#   rpc DeleteUsers (DeleteUsersRequest) returns (DeleteUsersResponse) {};
+
+#   // Comment API services.
+#   rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse) {};
+#   rpc UpdateComment (UpdateCommentRequest) returns (UpdateCommentResponse) {};
+#   rpc GetComments (GetCommentsRequest) returns (GetCommentsResponse) {};
+#   rpc DeleteComments (DeleteCommentsRequest) returns (DeleteCommentsResponse) {};
+
+# }
+
+type Query {
+  GetPosts(ids: [String]!): [Post!]!
+  GetCoupons(codes: [String]!): [String!]!
+}
+
+type Mutation {
+  CreatePost(id:String): Boolean!
+  UpdatePost(id:String!, input:PostInput!): Boolean!
+  DeletePost(postsID:[String!]): [String!]!
+  
+  # CreateCoupon(coupon:CouponInput!): Boolean
+  # UpdateCoupon(id:String!, coupon:CouponInput!): Boolean
+  # DeleteCoupon(coupons:[String!]): [String!]!
+}
