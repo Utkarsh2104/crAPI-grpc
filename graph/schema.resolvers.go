@@ -39,9 +39,9 @@ func (r *mutationResolver) DeletePost(ctx context.Context, postsID []string) ([]
 }
 
 // GetPosts is the resolver for the GetPosts field.
-func (r *queryResolver) GetPosts(ctx context.Context, ids []*string) ([]*model.Post, error) {
-	lis := []string{"oBvaQhfFqVWVdDBgAhaER6", "MnwSHsuN9okaPEiSerDuA3"}
-	posts := grpc_client.GetPosts(":9090", lis)
+func (r *queryResolver) GetPosts(ctx context.Context, ids []string) ([]*model.Post, error) {
+	// lis := []string{"oBvaQhfFqVWVdDBgAhaER6", "MnwSHsuN9okaPEiSerDuA3"}
+	posts := grpc_client.GetPosts(":9090", ids)
 
 	ret := []*model.Post{}
 	for i := 0; i < len(posts.Posts); i++ {

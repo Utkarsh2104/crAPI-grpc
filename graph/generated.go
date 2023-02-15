@@ -75,7 +75,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetCoupons func(childComplexity int, codes []*string) int
-		GetPosts   func(childComplexity int, ids []*string) int
+		GetPosts   func(childComplexity int, ids []string) int
 	}
 
 	User struct {
@@ -94,7 +94,7 @@ type MutationResolver interface {
 	DeletePost(ctx context.Context, postsID []string) ([]string, error)
 }
 type QueryResolver interface {
-	GetPosts(ctx context.Context, ids []*string) ([]*model.Post, error)
+	GetPosts(ctx context.Context, ids []string) ([]*model.Post, error)
 	GetCoupons(ctx context.Context, codes []*string) ([]string, error)
 }
 
@@ -269,7 +269,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPosts(childComplexity, args["ids"].([]*string)), true
+		return e.complexity.Query.GetPosts(childComplexity, args["ids"].([]string)), true
 
 	case "User.created_at":
 		if e.complexity.User.CreatedAt == nil {
@@ -476,10 +476,10 @@ func (ec *executionContext) field_Query_GetCoupons_args(ctx context.Context, raw
 func (ec *executionContext) field_Query_GetPosts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*string
+	var arg0 []string
 	if tmp, ok := rawArgs["ids"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
-		arg0, err = ec.unmarshalNString2ᚕᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalNString2ᚕstringᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1330,7 +1330,7 @@ func (ec *executionContext) _Query_GetPosts(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPosts(rctx, fc.Args["ids"].([]*string))
+		return ec.resolvers.Query().GetPosts(rctx, fc.Args["ids"].([]string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

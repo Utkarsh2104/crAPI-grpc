@@ -90,7 +90,7 @@ input CommentInput {
 # }
 
 type Query {
-  GetPosts(ids: [String]!): [Post!]!
+  GetPosts(ids: [String!]!): [Post!]!
   GetCoupons(codes: [String]!): [String!]!
 }
 
