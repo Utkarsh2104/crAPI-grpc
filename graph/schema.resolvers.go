@@ -15,8 +15,7 @@ import (
 
 // CreatePost is the resolver for the CreatePost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, id *string) (bool, error) {
-	// post := model.Post{}
-	post := models.Prepare(model.Post{})
+	post := models.PrepareNewPost(model.Post{})
 
 	res, err := grpc_client.CreatePost(":9090", post)
 	if err != nil {
@@ -30,12 +29,26 @@ func (r *mutationResolver) CreatePost(ctx context.Context, id *string) (bool, er
 
 // UpdatePost is the resolver for the UpdatePost field.
 func (r *mutationResolver) UpdatePost(ctx context.Context, id string, input model.PostInput) (bool, error) {
-	panic(fmt.Errorf("not implemented: UpdatePost - UpdatePost"))
+	res, err := grpc_client.UpdatePost(":9090", id, input)
+
+	if err != nil {
+		log.Fatalf("Error while updating post....%v", err)
+	} else {
+		println("post updated successfully..., res = ", res)
+	}
+	return res, nil
 }
 
 // DeletePost is the resolver for the DeletePost field.
 func (r *mutationResolver) DeletePost(ctx context.Context, postsID []string) ([]string, error) {
-	panic(fmt.Errorf("not implemented: DeletePost - DeletePost"))
+	res, err := grpc_client.DeletePost(":9090", postsID)
+
+	if err != nil {
+		log.Fatalf("Error while deleting post ..... %v", err)
+	} else {
+		println("Post delete successfully ..... wohoo!")
+	}
+	return res, err
 }
 
 // GetPosts is the resolver for the GetPosts field.

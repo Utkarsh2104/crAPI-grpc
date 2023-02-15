@@ -3,6 +3,7 @@ package grpc_client
 import (
 	"context"
 	"grpc/graph/model"
+	"grpc/models"
 	pb "grpc/pb/community_grpc/proto"
 	"log"
 
@@ -50,6 +51,45 @@ func CreatePost(address string, p model.Post) (bool, error) {
 	return created.GetSuccess(), nil
 }
 
+func UpdatePost(address string, id string, post model.PostInput) (bool, error) {
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Cannot connect to server, %v", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewCommunityServiceClient(conn)
+
+	ctx := context.Background()
+	ctx = metadata.NewOutgoingContext(
+		ctx,
+		metadata.Pairs("key1", "val1", "key2", "val2"),
+	)
+
+	p := models.PrepareUpdatePost(post)
+
+	updated, err := client.UpdatePost(ctx, &pb.UpdatePostRequest{
+		Id: id,
+		UpdatedPost: &pb.Post{
+			Id:        p.ID,
+			Title:     p.Title,
+			Content:   p.Content,
+			Author:    p.Author,
+			Comments:  p.Comments,
+			AuthorId:  p.AuthorID,
+			CreatedAt: p.CreatedAt,
+		},
+	})
+
+	if err != nil {
+		println("Updation failed")
+	} else {
+		println("Updation based on id successful")
+		println(updated.GetSuccess())
+	}
+	return updated.GetSuccess(), nil
+}
+
 func GetPosts(address string, ids []string) *pb.GetPostsResponse {
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
@@ -81,6 +121,38 @@ func GetPosts(address string, ids []string) *pb.GetPostsResponse {
 			Posts: GetPosts.Posts,
 		}
 	}
+}
+
+func DeletePost(address string, postsID []string) ([]string, error) {
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Cannot connect to server, %v", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewCommunityServiceClient(conn)
+
+	ctx := context.Background()
+	ctx = metadata.NewOutgoingContext(
+		ctx,
+		metadata.Pairs("key1", "val1", "key2", "val2"),
+	)
+
+	DeletePosts, err := client.DeletePosts(ctx, &pb.DeletePostsRequest{
+		Ids: postsID,
+	})
+
+	res := []string{}
+	if err != nil {
+		log.Fatalf("DeletePost failed")
+	} else {
+		println("Delete posts successful. Here are the deleted posts")
+		for i := 0; i < len(DeletePosts.DeletedPosts); i++ {
+			println("user ", i, " : \n", "Deleted post id : ", DeletePosts.DeletedPosts[i].Id)
+			res = append(res, DeletePosts.DeletedPosts[i].Id)
+		}
+	}
+	return res, nil
 }
 
 func main() {

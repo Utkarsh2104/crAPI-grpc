@@ -16,27 +16,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Post Field
-// type Post struct {
-// 	ID        string     `gorm:"primary_key;auto_increment" json:"id"`
-// 	Title     string     `gorm:"size:255;not null;unique" json:"title"`
-// 	Content   string     `gorm:"size:255;not null;" json:"content"`
-// 	Author    Author     `json:"author"`
-// 	Comments  []Comments `json:"comments"`
-// 	AuthorID  uint64     `sql:"type:int REFERENCES users(id)" json:"authorid"`
-// 	CreatedAt time.Time
-// }
-
-// func (post *Post) Prepare() {
-// 	post.ID = shortuuid.New()
-// 	post.Title = html.EscapeString(strings.TrimSpace(post.Title))
-// 	post.Content = html.EscapeString(strings.TrimSpace(post.Content))
-// 	post.Author = Prepare()
-// 	post.AuthorID = autherID
-// 	post.Comments = []Comments{}
-// 	post.CreatedAt = time.Now()
-// }
-
 // func Prepare(post *pb.CreatePostRequest) {
 // 	post.Post = &pb.Post{
 // 		Id:        shortuuid.New(),
@@ -49,7 +28,7 @@ import (
 // 	}
 // }
 
-func Prepare(post model.Post) model.Post {
+func PrepareNewPost(post model.Post) model.Post {
 	post = model.Post{
 		ID:        shortuuid.New(),
 		Title:     "Post Title - Filled by Prepare",
@@ -60,6 +39,19 @@ func Prepare(post model.Post) model.Post {
 		CreatedAt: time.Now().String(),
 	}
 	return post
+}
+
+func PrepareUpdatePost(post model.PostInput) model.Post {
+	p := &model.Post{
+		ID:        post.ID,
+		Title:     post.Title,
+		Content:   post.Content,
+		Author:    post.Author,
+		Comments:  post.Comments,
+		AuthorID:  post.AuthorID,
+		CreatedAt: post.CreatedAt,
+	}
+	return *p
 }
 
 func Validate(post *pb.CreatePostRequest) error {
@@ -152,7 +144,8 @@ func DeletePosts(client *mongo.Client, in []string) (*pb.DeletePostsResponse, er
 		var result *pb.Post
 		err_get := collection.FindOne(context.TODO(), filter).Decode(&result)
 		if err_get != nil {
-			log.Fatalf(("Getting post by id failed"))
+			println("Cannot delete post with " + in[i] + "..... Does not exist in DataBase")
+			continue
 		}
 		_, err := collection.DeleteOne(context.TODO(), filter)
 		if err != nil {
