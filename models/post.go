@@ -42,6 +42,7 @@ func PrepareNewPost(post model.Post) model.Post {
 }
 
 func PrepareUpdatePost(post model.PostInput) model.Post {
+	// used pointer and reference to handle a warning
 	p := &model.Post{
 		ID:        post.ID,
 		Title:     post.Title,

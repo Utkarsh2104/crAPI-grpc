@@ -91,15 +91,15 @@ input CommentInput {
 
 type Query {
   GetPosts(ids: [String!]!): [Post!]!
-  GetCoupons(codes: [String]!): [String!]!
+  GetCoupons(codes: [String!]!): [Coupon!]!
 }
 
 type Mutation {
-  CreatePost(id:String): Boolean!
+  CreatePost: Boolean!
   UpdatePost(id:String!, input:PostInput!): Boolean!
   DeletePost(postsID:[String!]): [String!]!
   
-  # CreateCoupon(coupon:CouponInput!): Boolean
-  # UpdateCoupon(id:String!, coupon:CouponInput!): Boolean
-  # DeleteCoupon(coupons:[String!]): [String!]!
+  CreateCoupon(coupon_code:String): Boolean
+  UpdateCoupon(id:String!, input:CouponInput!): Boolean!
+  DeleteCoupon(coupons:[String!]): [String!]!
 }

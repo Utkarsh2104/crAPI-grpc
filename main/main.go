@@ -208,7 +208,7 @@ func (s *server) DeleteUsers(ctx context.Context, in *pb.DeleteUsersRequest) (*p
 
 func (s *server) CreateCoupon(ctx context.Context, in *pb.CreateCouponRequest) (*pb.CreateCouponResponse, error) {
 	println("Client made a call to create Coupon ..... calling prepareCoupon")
-	models.PrepareCoupon(in)
+	// models.PrepareCoupon(in)
 	coupon := in.GetCoupon()
 
 	log.Printf("coupon is : %v", coupon)

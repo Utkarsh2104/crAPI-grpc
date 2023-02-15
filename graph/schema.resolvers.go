@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"grpc/graph/model"
 	"grpc/grpc_client"
 	"grpc/models"
@@ -14,7 +13,7 @@ import (
 )
 
 // CreatePost is the resolver for the CreatePost field.
-func (r *mutationResolver) CreatePost(ctx context.Context, id *string) (bool, error) {
+func (r *mutationResolver) CreatePost(ctx context.Context) (bool, error) {
 	post := models.PrepareNewPost(model.Post{})
 
 	res, err := grpc_client.CreatePost(":9090", post)
@@ -51,6 +50,45 @@ func (r *mutationResolver) DeletePost(ctx context.Context, postsID []string) ([]
 	return res, err
 }
 
+// CreateCoupon is the resolver for the CreateCoupon field.
+func (r *mutationResolver) CreateCoupon(ctx context.Context, couponCode *string) (*bool, error) {
+	coupon := models.PrepareNewCoupon(model.Coupon{})
+
+	res, err := grpc_client.CreateCoupon(":9090", coupon)
+	if err != nil {
+		log.Fatalf("Error while creating Coupon by graphQL ..... %v", err)
+	} else {
+		println("Creating Coupon by GraphQL successful .. message on GraphQl server, :))")
+		println("Received response, ", res)
+	}
+	return &res, nil
+}
+
+// UpdateCoupon is the resolver for the UpdateCoupon field.
+func (r *mutationResolver) UpdateCoupon(ctx context.Context, id string, input model.CouponInput) (bool, error) {
+	res, err := grpc_client.UpdateCoupon(":9090", id, input)
+
+	if err != nil {
+		log.Fatalf("Error while Updating Coupon by graphQL ..... %v", err)
+	} else {
+		println("Updating Coupon by GraphQL successful .. message on GraphQl server, :))")
+		println("Received response, ", res)
+	}
+	return res, nil
+}
+
+// DeleteCoupon is the resolver for the DeleteCoupon field.
+func (r *mutationResolver) DeleteCoupon(ctx context.Context, coupons []string) ([]string, error) {
+	res, err := grpc_client.DeleteCoupon(":9090", coupons)
+
+	if err != nil {
+		log.Fatalf("Error while deleting post ..... %v", err)
+	} else {
+		println("Post delete successfully ..... wohoo!")
+	}
+	return res, err
+}
+
 // GetPosts is the resolver for the GetPosts field.
 func (r *queryResolver) GetPosts(ctx context.Context, ids []string) ([]*model.Post, error) {
 	// lis := []string{"oBvaQhfFqVWVdDBgAhaER6", "MnwSHsuN9okaPEiSerDuA3"}
@@ -74,8 +112,20 @@ func (r *queryResolver) GetPosts(ctx context.Context, ids []string) ([]*model.Po
 }
 
 // GetCoupons is the resolver for the GetCoupons field.
-func (r *queryResolver) GetCoupons(ctx context.Context, codes []*string) ([]string, error) {
-	panic(fmt.Errorf("not implemented: GetCoupons - GetCoupons"))
+func (r *queryResolver) GetCoupons(ctx context.Context, codes []string) ([]*model.Coupon, error) {
+	// lis := []string{"oBvaQhfFqVWVdDBgAhaER6", "MnwSHsuN9okaPEiSerDuA3"}
+	Coupons := grpc_client.GetCoupon(":9090", codes)
+
+	ret := []*model.Coupon{}
+	for i := 0; i < len(Coupons.Coupons); i++ {
+		c := model.Coupon{
+			CouponCode: Coupons.Coupons[i].CouponCode,
+			Amount:     Coupons.Coupons[i].Amount,
+			CreatedAt:  Coupons.Coupons[i].CreatedAt,
+		}
+		ret = append(ret, &c)
+	}
+	return ret, nil
 }
 
 // Mutation returns MutationResolver implementation.
