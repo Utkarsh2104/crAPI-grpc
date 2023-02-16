@@ -20,6 +20,7 @@ import (
 	"log"
 	"time"
 
+	"grpc/graph/model"
 	pb "grpc/pb/community_grpc/proto"
 
 	"github.com/lithammer/shortuuid"
@@ -42,6 +43,26 @@ func PrepareComment(comment *pb.CreateCommentRequest) {
 		Author:    "Author",
 		CreatedAt: time.Now().String(),
 	}
+}
+
+func PrepareNewComment(comment model.Comment) model.Comment {
+	comment = model.Comment{
+		ID:        shortuuid.New(),
+		Content:   "Comment {.......}",
+		Author:    "Author",
+		CreatedAt: time.Now().String(),
+	}
+	return comment
+}
+
+func PrepareUpdateComment(comment model.CommentInput) model.Comment {
+	c := &model.Comment{
+		ID:        comment.ID,
+		Content:   comment.Content,
+		Author:    comment.Author,
+		CreatedAt: comment.CreatedAt,
+	}
+	return *c
 }
 
 func SaveComment(client *mongo.Client, comment *pb.Comment) (*pb.CreateCommentResponse, error) {

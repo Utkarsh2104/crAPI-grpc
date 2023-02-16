@@ -7,6 +7,7 @@ import (
 	"log"
 	"time"
 
+	"grpc/graph/model"
 	pb "grpc/pb/community_grpc/proto"
 
 	"github.com/lithammer/shortuuid"
@@ -46,6 +47,32 @@ func Prepare(post *pb.CreatePostRequest) {
 		AuthorId:  "AuthorID",
 		CreatedAt: time.Now().String(),
 	}
+}
+
+func PrepareNewPost(post model.Post) model.Post {
+	post = model.Post{
+		ID:        shortuuid.New(),
+		Title:     "Post Title - Filled by Prepare",
+		Content:   "Post Content {.......} - Filled by Prepare",
+		Author:    "Author - Made by Rajat",
+		Comments:  []string{"comment1", "comment2", "comment3"},
+		AuthorID:  "AuthorID - id " + shortuuid.New(),
+		CreatedAt: time.Now().String(),
+	}
+	return post
+}
+
+func PrepareUpdatePost(post model.PostInput) model.Post {
+	p := &model.Post{
+		ID:        post.ID,
+		Title:     post.Title,
+		Content:   post.Content,
+		Author:    post.Author,
+		Comments:  post.Comments,
+		AuthorID:  post.AuthorID,
+		CreatedAt: post.CreatedAt,
+	}
+	return *p
 }
 
 func Validate(post *pb.CreatePostRequest) error {

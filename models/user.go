@@ -25,6 +25,7 @@ import (
 	"github.com/badoux/checkmail"
 	"golang.org/x/crypto/bcrypt"
 
+	"grpc/graph/model"
 	pb "grpc/pb/community_grpc/proto"
 
 	"github.com/lithammer/shortuuid"
@@ -70,6 +71,30 @@ func PrepareUser(user *pb.CreateUserRequest) {
 		Picurl:    "gdhrsjtrdytf",
 		CreatedAt: time.Now().String(),
 	}
+}
+
+func PrepareNewUser(user model.User) model.User {
+	user = model.User{
+		ID:        shortuuid.New(),
+		Nickname:  "John",
+		Email:     "something@something.com",
+		VehicleID: shortuuid.New(),
+		Picurl:    "gdhrsjtrdytf",
+		CreatedAt: time.Now().String(),
+	}
+	return user
+}
+
+func PrepareUpdateUser(user model.UserInput) model.User {
+	u := &model.User{
+		ID:        user.ID,
+		Nickname:  user.Nickname,
+		Email:     user.Email,
+		VehicleID: user.VehicleID,
+		Picurl:    user.Picurl,
+		CreatedAt: user.CreatedAt,
+	}
+	return *u
 }
 
 // Validate Author
