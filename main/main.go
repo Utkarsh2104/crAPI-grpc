@@ -46,7 +46,7 @@ func InitializeMongo(DbUser string, DbPassword string, DbHost string, DbPort str
 
 func (s *server) CreatePost(ctx context.Context, in *pb.CreatePostRequest) (*pb.CreatePostResponse, error) {
 	println("Client made a call to create Post ..... calling prepare")
-	models.Prepare(in)
+	// models.Prepare(in)
 	post := in.GetPost()
 
 	log.Printf("post is : %v", post)
@@ -208,7 +208,7 @@ func (s *server) DeleteUsers(ctx context.Context, in *pb.DeleteUsersRequest) (*p
 
 func (s *server) CreateCoupon(ctx context.Context, in *pb.CreateCouponRequest) (*pb.CreateCouponResponse, error) {
 	println("Client made a call to create Coupon ..... calling prepareCoupon")
-	models.PrepareCoupon(in)
+	// models.PrepareCoupon(in)
 	coupon := in.GetCoupon()
 
 	log.Printf("coupon is : %v", coupon)

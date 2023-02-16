@@ -18,7 +18,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"grpc/graph/model"
 	"log"
+	"math/rand"
+	"strconv"
 	"time"
 
 	pb "grpc/pb/community_grpc/proto"
@@ -29,12 +32,43 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func PrepareCoupon(coupon *pb.CreateCouponRequest) {
-	coupon.Coupon = &pb.Coupon{
+// func PrepareCoupon(coupon *pb.CreateCouponRequest) {
+// 	coupon.Coupon = &pb.Coupon{
+// 		CouponCode: shortuuid.New(),
+// 		Amount:     "500",
+// 		CreatedAt:  time.Now().String(),
+// 	}
+// }
+// func PrepareNewPost(post model.Post) model.Post {
+// 	post = model.Post{
+// 		ID:        shortuuid.New(),
+// 		Title:     "Post Title - Filled by Prepare",
+// 		Content:   "Post Content {.......} - Filled by Prepare",
+// 		Author:    "Author - Made by Rajat",
+// 		Comments:  []string{"comment1", "comment2", "comment3"},
+// 		AuthorID:  "AuthorID - id " + shortuuid.New(),
+// 		CreatedAt: time.Now().String(),
+// 	}
+// 	return post
+// }
+
+func PrepareNewCoupon(coupon model.Coupon) model.Coupon {
+	coupon = model.Coupon{
 		CouponCode: shortuuid.New(),
-		Amount:     "500",
+		Amount:     strconv.Itoa(rand.Intn(2000)),
 		CreatedAt:  time.Now().String(),
 	}
+	return coupon
+}
+
+func PrepareUpdatedCoupon(coupon model.CouponInput) model.Coupon {
+	// using pointers and reference for handling a warning
+	uc := &model.Coupon{
+		CouponCode: coupon.CouponCode,
+		Amount:     coupon.Amount,
+		CreatedAt:  coupon.CreatedAt,
+	}
+	return *uc
 }
 
 // Validate coupon
@@ -115,7 +149,8 @@ func DeleteCoupons(client *mongo.Client, in []string) (*pb.DeleteCouponsResponse
 		var result *pb.Coupon
 		err_get := collection.FindOne(context.TODO(), filter).Decode(&result)
 		if err_get != nil {
-			log.Fatalf(("Getting coupon by couponcode failed"))
+			println("Cannot delete coupon with id " + in[i] + " .... Coupon does not exist in database")
+			continue
 		}
 		_, err := collection.DeleteOne(context.TODO(), filter)
 		if err != nil {
